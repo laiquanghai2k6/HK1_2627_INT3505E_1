@@ -44,7 +44,7 @@ Phiên bản API được định dạng bằng path segment `/api/v1/`.
 │       │   ├── POST            - Thêm bình luận mới vào bài viết
 │       │   └── /{comment_id}
 │       │       └──
-
+```
 ---
 
 ### 4. Danh sách Endpoint API chi tiết & Kịch bản kiểm thử
