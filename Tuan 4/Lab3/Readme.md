@@ -83,7 +83,7 @@ Connection: close
 
 ---
 
-### 1.3. Request Thiếu Dữ Liệu Bắt Buộc (Lỗi 400)
+### 1.3. 
 
 curl.exe -i -X GET 'http://localhost:5000/orders?status=paid&customer_id=101'
 
