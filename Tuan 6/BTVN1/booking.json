@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.hotelbooking.example/schemas/booking.json",
+  "title": "Booking",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "guestId", "hotelId", "checkIn", "checkOut", "numGuests", "items", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^bkg_[a-z0-9]+$", "readOnly": true},
+    "guestId": {"type": "string", "pattern": "^gst_[a-z0-9]+$"},
+    "hotelId": {"type": "string", "pattern": "^htl_[a-z0-9]+$"},
+    "checkIn": {"type": "string", "format": "date"},
+    "checkOut": {"type": "string", "format": "date"},
+    "numGuests": {"type": "integer", "minimum": 1, "maximum": 20},
+    "status": {"enum": ["pending", "confirmed", "cancelled", "completed"], "readOnly": true},
+    "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/bookingItem"}},
+    "totalPrice": {"$ref": "#/$defs/money", "readOnly": true},
+    "note": {"type": "string", "maxLength": 500},
+    "createdAt": {"type": "string", "format": "date-time", "readOnly": true}
+  },
+  "$defs": {
+    "bookingItem": {
+      "type": "object",
+      "required": ["roomTypeId", "quantity"],
+      "properties": {
+        "roomTypeId": {"type": "string", "pattern": "^rt_[a-z0-9]+$"},
+        "quantity": {"type": "integer", "minimum": 1, "maximum": 10},
+        "nightlyPrice": {"$ref": "#/$defs/money", "readOnly": true}
+      }
+    },
+    "money": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "additionalProperties": false,
+      "properties": {"amount": {"type": "integer", "minimum": 0}, "currency": {"enum": ["VND", "USD", "EUR"]}}
+    }
+  }
+}

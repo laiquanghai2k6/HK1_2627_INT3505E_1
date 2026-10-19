@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.hotelbooking.example/schemas/review.json",
+  "title": "Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "hotelId", "bookingId", "rating"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^rev_[a-z0-9]+$", "readOnly": true},
+    "hotelId": {"type": "string", "pattern": "^htl_[a-z0-9]+$"},
+    "bookingId": {"type": "string", "pattern": "^bkg_[a-z0-9]+$"},
+    "author": {
+      "type": "object",
+      "readOnly": true,
+      "properties": {"id": {"type": "string", "pattern": "^gst_[a-z0-9]+$"}, "displayName": {"type": "string"}}
+    },
+    "rating": {"type": "integer", "minimum": 1, "maximum": 5},
+    "title": {"type": "string", "maxLength": 120},
+    "comment": {"type": "string", "maxLength": 2000},
+    "createdAt": {"type": "string", "format": "date-time", "readOnly": true}
+  }
+}
