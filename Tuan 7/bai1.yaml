@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: Social Network API - Auth & Posts Module
+  version: 1.0.0
+  description: |
+    API specification cho hệ thống Social Network. 
+    Tích hợp các tiêu chuẩn bảo mật: Whitelist thuật toán JWT, Refresh Token Rotation, và Phân quyền theo Scope.
+servers:
+  - url: https://api.socialnetwork.local/v1
+
+paths:
+  /auth/login:
+    post:
+      summary: Đăng nhập hệ thống
+      description: Xác thực tài khoản bằng email/password để nhận Access Token và Refresh Token.
+      operationId: loginUser
+      security: [] 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: SecurePass123!
+      responses:
+        '200':
+          description: Đăng nhập thành công, trả về cặp token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJSUzI1NiIs...
+                  refreshToken:
+                    type: string
+                    example: dGhpcy1pcy1hLXJlZnJlc2gtdG9rZW4...
+                  expiresIn:
+                    type: integer
+                    example: 900
+        '400':
+          description: Lỗi dữ liệu đầu vào (Validation Error).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Sai thông tin đăng nhập (Email hoặc mật khẩu không đúng).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Quá giới hạn số lần thử (Rate Limit Exceeded) do chống Brute-force.
+
+  /auth/refresh:
+    post:
+      summary: Làm mới Access Token (Refresh Token Rotation)
+      description: Sử dụng Refresh Token hợp lệ để nhận cặp Access Token và Refresh Token mới. Refresh Token cũ sẽ bị thu hồi.
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  example: dGhpcy1pcy1hLXJlZnJlc2gtdG9rZW4...
+      responses:
+        '200':
+          description: Cấp token mới thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        '401':
+          description: |
+            Lỗi xác thực Refresh Token. Các trường hợp xảy ra:
+            - Token không tồn tại hoặc đã hết hạn.
+            - Token đã bị thu hồi (Revoked).
+            - Phát hiện Replay Attack (Token cũ bị cố tình sử dụng lại lần 2 -> Thu hồi toàn bộ Token Family).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /posts/{id}:
+    get:
+      summary: Lấy chi tiết bài viết theo ID
+      description: Trả về thông tin chi tiết của một bài viết công khai hoặc thuộc quyền sở hữu của user.
+      operationId: getPostById
+      security:
+        - BearerAuth:
+            - posts:read 
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của bài viết (UUID hoặc Long)
+          schema:
+            type: string
+            example: "650f1f9e-0490-410a-b32c-f6828551f38e"
+      responses:
+        '200':
+          description: Lấy dữ liệu thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  content:
+                    type: string
+                  authorId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+        '401':
+          description: Chưa đăng nhập hoặc Access Token hết hạn.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Không đủ quyền (Missing Scope `posts:read`) hoặc bài viết ở trạng thái riêng tư/BOLA violation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Không tìm thấy bài viết với ID tương ứng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token với định dạng `Bearer <token>`. Yêu cầu scope `posts:read` cho endpoint đọc bài viết.
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 401
+        error:
+          type: string
+          example: "Unauthorized"
+        message:
+          type: string
+          example: "Refresh token has been revoked or expired."
+        path:
+          type: string
+          example: "/auth/refresh"
