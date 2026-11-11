@@ -22,6 +22,7 @@ paths:
                   status: {type: string}
   /books:
     get:
+      operationId: listBooks
       # LAB 2 intentional issue 1: operationId is missing.
       parameters:
         - in: query
@@ -92,9 +93,7 @@ paths:
         '204':
           description: Deleted (response has no body)
           # LAB 2 intentional issue 2: 204 incorrectly declares a body.
-          content:
-            application/json:
-              schema: {type: object}
+
         '404': {$ref: '#/components/responses/NotFound'}
 components:
   schemas:
