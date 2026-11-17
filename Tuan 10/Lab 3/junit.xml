@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite id="0" hostname="http://127.0.0.1" package="books" name="GET /books — initial list" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.895" time="0.029">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="books / GET /books — initial list" name="200 OK" time="0.015"/>
+    <testcase classname="books / GET /books — initial list" name="body is array" time="0.015"/>
+  </testsuite>
+  <testsuite id="1" hostname="http://127.0.0.1" package="books" name="POST /books — create" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.924" time="0.014">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="books / POST /books — create" name="201 Created" time="0.007"/>
+    <testcase classname="books / POST /books — create" name="positive id" time="0.007"/>
+  </testsuite>
+  <testsuite id="2" hostname="http://127.0.0.1" package="books" name="GET /books/{id} — read" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.938" time="0.006">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="books / GET /books/{id} — read" name="200 OK" time="0.003"/>
+    <testcase classname="books / GET /books/{id} — read" name="expected fields" time="0.003"/>
+  </testsuite>
+  <testsuite id="3" hostname="http://127.0.0.1" package="books" name="PUT /books/{id} — replace" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.944" time="0.016">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="books / PUT /books/{id} — replace" name="200 OK" time="0.008"/>
+    <testcase classname="books / PUT /books/{id} — replace" name="updated title" time="0.008"/>
+  </testsuite>
+  <testsuite id="4" hostname="http://127.0.0.1" package="books" name="DELETE /books/{id} — delete" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.960" time="0.012">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="books / DELETE /books/{id} — delete" name="204 No Content" time="0.006"/>
+    <testcase classname="books / DELETE /books/{id} — delete" name="empty body" time="0.006"/>
+  </testsuite>
+  <testsuite id="5" hostname="http://127.0.0.1" package="error-cases" name="POST /books — missing title" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.972" time="0.005">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="error-cases / POST /books — missing title" name="400 Bad Request" time="0.003"/>
+    <testcase classname="error-cases / POST /books — missing title" name="JSON code + message" time="0.003"/>
+  </testsuite>
+  <testsuite id="6" hostname="http://127.0.0.1" package="error-cases" name="GET /books/9999 — not found" tests="2" failures="0" errors="0" timestamp="2026-11-17T21:05:01.977" time="0.006">
+    <properties>
+      <property name="base_url" value="http://127.0.0.1:5000"/>
+    </properties>
+    <testcase classname="error-cases / GET /books/9999 — not found" name="404 Not Found" time="0.003"/>
+    <testcase classname="error-cases / GET /books/9999 — not found" name="JSON code + message" time="0.003"/>
+  </testsuite>
+</testsuites>

@@ -26,9 +26,12 @@ book_schema = BookInput()
 
 def create_app(config=None, cfg=None):
     """Application factory. ``cfg`` is accepted for lecture-code compatibility."""
+    db_path = Path("instance/books.db").resolve()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
     app = Flask(__name__)
     app.config.update(
-        SQLALCHEMY_DATABASE_URI="sqlite:///" + str(Path("instance/books.db").resolve()),
+        SQLALCHEMY_DATABASE_URI="sqlite:///" + str(db_path),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         JSON_SORT_KEYS=False,
         TESTING=False,
