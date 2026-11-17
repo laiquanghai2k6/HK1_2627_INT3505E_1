@@ -1,0 +1,19 @@
+{
+  "name": "lab-3",
+  "version": "1.0.0",
+  "description": "**Flask 3.x / SQLAlchemy / pytest / OpenAPI / Postman / Locust**",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "newman-reporter-junitfull": "^1.1.1"
+  }
+}
